@@ -1,0 +1,11 @@
+langgraph
+langchain-openai
+langchain-core
+copilotkit
+fastapi
+uvicorn
+google-api-python-client
+google-auth
+google-auth-oauthlib
+httpx
+python-dotenv
