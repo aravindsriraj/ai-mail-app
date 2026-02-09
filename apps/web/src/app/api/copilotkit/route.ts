@@ -10,9 +10,10 @@ const serviceAdapter = new ExperimentalEmptyAdapter();
 
 const runtime = new CopilotRuntime({
   agents: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mail_agent: new LangGraphHttpAgent({
       url: process.env.AGENT_URL || "http://localhost:8123",
-    }),
+    }) as any,
   },
 });
 
