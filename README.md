@@ -174,6 +174,19 @@ Navigate to `http://localhost:3000`, sign in with Google, and start chatting wit
 
 ---
 
+## Live Demo
+
+The app is deployed on Vercel as two projects:
+
+| Service | URL | What it runs |
+|---|---|---|
+| **Frontend** | [web-zeta-lime-70.vercel.app](https://web-zeta-lime-70.vercel.app) | Next.js 16 — mail UI, CopilotKit runtime, Gmail API routes, Google OAuth |
+| **Agent** | [agent-pi-two.vercel.app](https://agent-pi-two.vercel.app) | FastAPI (Python serverless) — LangGraph agent via AG-UI protocol |
+
+The frontend's `/api/copilotkit` route proxies to the agent. All env vars (API keys, OAuth secrets) are server-side only and encrypted on Vercel.
+
+---
+
 ## Project Structure
 
 ```
