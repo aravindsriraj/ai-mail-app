@@ -228,12 +228,3 @@ ai-mail-app/
 └── README.md
 ```
 
----
-
-## Known Limitations
-
-- **No real-time sync** — Inbox only refreshes on page load or after agent actions. Pub/Sub webhook code exists but requires a public URL to receive push notifications from Google.
-- **Dark mode only** — No light mode toggle.
-- **No thread view** — Emails are displayed individually, not grouped by conversation thread.
-- **No attachments** — Cannot view or send email attachments.
-- **Multi-turn agent bug** — `@ag-ui/langgraph@0.0.23` has a "Message not found" error in multi-turn conversations. Patched via `scripts/patch-ag-ui-langgraph.js` (runs on `postinstall`).
