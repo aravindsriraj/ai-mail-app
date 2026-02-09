@@ -75,19 +75,19 @@ The agent also receives **context** via `useCopilotReadable`: current view, curr
                          │
           ┌──────────────┴───────────────┐
           │  Python Agent (port 8123)     │
-          │  LangGraph `create_agent()`   │
-          │  + CopilotKitMiddleware()     │
+          │  FastAPI + uvicorn            │
+          │  LangGraph StateGraph         │
+          │  + CopilotKitState            │
           │  Model: GPT-4.1              │
           │  tools=[] (all from frontend) │
-          │  Served via `langgraph dev`   │
           └──────────────────────────────┘
 ```
 
 ### How it works
 
 1. User types a message in the CopilotKit sidebar chat
-2. CopilotKit runtime (`/api/copilotkit`) forwards it to the LangGraph agent (port 8123)
-3. `CopilotKitMiddleware()` auto-injects the 7 frontend actions as tools available to the LLM
+2. CopilotKit runtime (`/api/copilotkit`) forwards it to the FastAPI agent (port 8123) via AG-UI protocol
+3. Frontend actions are injected into `CopilotKitState` and bound as tools to the LLM
 4. The agent (GPT-4.1) decides which tool(s) to call based on the system prompt and user context
 5. Tool calls stream back to the frontend, where `useCopilotAction` handlers execute them
 6. Handlers update the Zustand store → React re-renders the UI
@@ -95,7 +95,7 @@ The agent also receives **context** via `useCopilotReadable`: current view, curr
 
 ### Key Design Decisions
 
-- **All tools are frontend actions** — The Python agent has `tools=[]`. All 7 tools are defined as `useCopilotAction` hooks in React. `CopilotKitMiddleware()` injects them at runtime. This means the agent controls the UI directly.
+- **All tools are frontend actions** — The Python agent has `tools=[]`. All 7 tools are defined as `useCopilotAction` hooks in React. The AG-UI protocol injects them into `CopilotKitState` at runtime. This means the agent controls the UI directly.
 - **Gmail API stays server-side** — The frontend actions call Next.js API routes (`/api/gmail/*`), which use the OAuth access token from the NextAuth session. The Python agent never touches Gmail directly.
 - **Context awareness** — `useCopilotReadable` feeds 5 pieces of context to the agent: current view, open email, filters, compose data, and visible inbox emails. This lets the agent understand what the user sees.
 - **Zustand for state** — Single store manages view, email lists, pagination tokens, compose data, filters. Both UI interactions and agent tool calls mutate the same store.
@@ -164,8 +164,8 @@ Or run them separately:
 # Terminal 1: Next.js frontend
 cd apps/web && npm run dev
 
-# Terminal 2: Python agent (LangGraph dev server)
-cd apps/agent && .venv/bin/langgraph dev --port 8123
+# Terminal 2: Python agent (FastAPI + uvicorn)
+cd apps/agent && .venv/bin/python -m mail_agent.server
 ```
 
 ### 4. Open the app
@@ -186,7 +186,7 @@ ai-mail-app/
 │   │   │   │   ├── providers.tsx         # SessionProvider + CopilotKit provider
 │   │   │   │   ├── layout.tsx            # Root layout
 │   │   │   │   └── api/
-│   │   │   │       ├── copilotkit/       # CopilotKit runtime → LangGraphAgent
+│   │   │   │       ├── copilotkit/       # CopilotKit runtime → LangGraphHttpAgent
 │   │   │   │       ├── auth/             # NextAuth Google OAuth routes
 │   │   │   │       └── gmail/
 │   │   │   │           ├── messages/     # GET list/search, GET by ID
@@ -219,10 +219,10 @@ ai-mail-app/
 │   │   └── package.json
 │   └── agent/                            # Python LangGraph agent
 │       ├── mail_agent/
-│       │   ├── agent.py                  # create_agent() + CopilotKitMiddleware
+│       │   ├── agent.py                  # StateGraph + CopilotKitState + chat_node
 │       │   ├── state.py                  # Agent state types
-│       │   └── server.py                 # FastAPI server (alternative to langgraph dev)
-│       ├── langgraph.json                # LangGraph config (graph: mail_agent)
+│       │   └── server.py                 # FastAPI + uvicorn server
+│       ├── langgraph.json                # LangGraph config (kept for reference)
 │       └── requirements.txt
 ├── package.json                          # Root scripts (npm run dev → concurrently)
 └── README.md

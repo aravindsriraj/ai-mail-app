@@ -2,8 +2,10 @@ langgraph
 langchain-openai
 langchain-core
 copilotkit
+ag-ui-langgraph
 fastapi
 uvicorn
+typing_extensions
 google-api-python-client
 google-auth
 google-auth-oauthlib

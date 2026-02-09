@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "concurrently \"npm run dev:web\" \"npm run dev:agent\"",
     "dev:web": "cd apps/web && npm run dev",
-    "dev:agent": "cd apps/agent && .venv/bin/langgraph dev --port 8123"
+    "dev:agent": "cd apps/agent && .venv/bin/python -m mail_agent.server"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

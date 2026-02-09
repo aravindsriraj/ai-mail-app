@@ -1,9 +1,10 @@
 """FastAPI server for the mail agent with CopilotKit integration."""
 
 import os
+import warnings
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
 from copilotkit import LangGraphAGUIAgent
 from ag_ui_langgraph import add_langgraph_fastapi_endpoint
 
@@ -13,18 +14,28 @@ load_dotenv()
 
 app = FastAPI(title="AI Mail Agent")
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+add_langgraph_fastapi_endpoint(
+    app=app,
+    agent=LangGraphAGUIAgent(
+        name="mail_agent",
+        description="An AI mail assistant that helps users manage their Gmail inbox.",
+        graph=graph,
+    ),
+    path="/",
 )
 
-agent = LangGraphAGUIAgent(
-    name="mail_agent",
-    description="An AI mail assistant that helps users manage their Gmail inbox. Can search, read, compose, send emails and control the mail UI.",
-    graph=graph,
-)
 
-add_langgraph_fastapi_endpoint(app, agent, "/copilotkit")
+def main():
+    """Run the uvicorn server."""
+    port = int(os.getenv("PORT", "8123"))
+    uvicorn.run(
+        "mail_agent.server:app",
+        host="0.0.0.0",
+        port=port,
+        reload=True,
+    )
+
+
+warnings.filterwarnings("ignore", category=UserWarning, module="pydantic")
+if __name__ == "__main__":
+    main()
