@@ -4,6 +4,8 @@ A Gmail client where an AI assistant **controls the mail UI programmatically** â
 
 Built with **Next.js 16**, **CopilotKit**, **LangGraph** (Python), and the **Gmail API**.
 
+Demo: https://www.loom.com/share/6b31353ec8fe4db1bd03a6b142103537
+
 ---
 
 ## Features
