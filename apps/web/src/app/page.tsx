@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession, signIn } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { CopilotSidebar } from "@copilotkit/react-ui";
 import { MailApp } from "@/components/mail/mail-app";
 import { Loader2, Mail } from "lucide-react";

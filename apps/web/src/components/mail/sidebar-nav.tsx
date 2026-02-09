@@ -2,7 +2,8 @@
 
 import { useMailStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
-import { Inbox, Send, PenSquare, Search } from "lucide-react";
+import { Inbox, Send, PenSquare, Search, LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
 import type { MailView } from "@/types/email";
 
 const navItems: { view: MailView; label: string; icon: React.ReactNode }[] = [
@@ -59,6 +60,16 @@ export function SidebarNav() {
           <span>Search Results</span>
         </button>
       )}
+
+      <div className="mt-auto pt-2 border-t border-zinc-800">
+        <button
+          onClick={() => signOut()}
+          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-zinc-400 hover:text-red-400 hover:bg-zinc-800/50 transition-colors w-full"
+        >
+          <LogOut size={18} />
+          <span>Sign out</span>
+        </button>
+      </div>
     </nav>
   );
 }
