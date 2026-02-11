@@ -272,7 +272,7 @@ export function useMailActions() {
         dt.setDate(dt.getDate() + 1);
         return `${dt.getFullYear()}/${String(dt.getMonth() + 1).padStart(2, "0")}/${String(dt.getDate()).padStart(2, "0")}`;
       };
-      const queryParts: string[] = ["in:inbox category:primary"];
+      const queryParts: string[] = ["in:inbox"];
       if (sender) queryParts.push(`from:${sender}`);
       if (keyword) queryParts.push(keyword);
       if (unreadOnly) queryParts.push("is:unread");
